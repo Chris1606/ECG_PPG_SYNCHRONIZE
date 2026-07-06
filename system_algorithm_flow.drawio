@@ -1,0 +1,170 @@
+<mxfile host="app.diagrams.net" modified="2026-07-06T00:00:00.000Z" agent="Codex" version="24.7.17" type="device">
+  <diagram id="ecg-ppg-sync-flow" name="ECG_PPG_Sync_Algorithm">
+    <mxGraphModel dx="1800" dy="1200" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1250" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="title" value="Lưu đồ thuật toán hệ thống thu đồng bộ ECG AD8232 và PPG MAX30102 trên ESP32" style="text;html=1;strokeColor=none;fillColor=none;fontSize=22;fontStyle=1;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="210" y="20" width="1380" height="40" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="lane_pc" value="Máy tính - UI_Reciever.py" style="swimlane;html=1;rounded=0;whiteSpace=wrap;fillColor=#e8f4fd;strokeColor=#2b78c5;fontSize=16;fontStyle=1;startSize=34;" vertex="1" parent="1">
+          <mxGeometry x="40" y="90" width="520" height="1050" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane_esp" value="ESP32 firmware - PPG_PCG_ECG.c, sensor_init.c" style="swimlane;html=1;rounded=0;whiteSpace=wrap;fillColor=#f4f8e8;strokeColor=#6aa84f;fontSize=16;fontStyle=1;startSize=34;" vertex="1" parent="1">
+          <mxGeometry x="610" y="90" width="610" height="1050" as="geometry"/>
+        </mxCell>
+        <mxCell id="lane_sensor" value="Cảm biến, bộ đệm và dữ liệu đầu ra" style="swimlane;html=1;rounded=0;whiteSpace=wrap;fillColor=#fff4e6;strokeColor=#e69138;fontSize=16;fontStyle=1;startSize=34;" vertex="1" parent="1">
+          <mxGeometry x="1270" y="90" width="490" height="1050" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="pc_start" value="Bắt đầu chương trình UI" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="145" width="220" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_init_dirs" value="Tạo thư mục dữ liệu&lt;br&gt;data_csv/SYNC/raw&lt;br&gt;data_csv/SYNC/filtered" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="165" y="225" width="270" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_build_ui" value="Khởi tạo Tkinter UI&lt;br&gt;COM, người đo, mode, thời gian&lt;br&gt;nút Start/Stop/Open CSV, plot, UART log" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="145" y="330" width="310" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_choose" value="Người dùng chọn COM, mode ECG/PPG/BOTH&lt;br&gt;và duration_s" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="145" y="445" width="310" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_valid" value="Dữ liệu nhập hợp lệ?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="200" y="540" width="200" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_error" value="Hiển thị cảnh báo&lt;br&gt;thiếu COM / duration không hợp lệ / đang đo" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="80" y="660" width="210" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_worker" value="Tạo worker thread&lt;br&gt;mở Serial 115200 baud&lt;br&gt;reset input buffer" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="330" y="660" width="200" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_send" value="Gửi UART xuống ESP32&lt;br&gt;1. MODE: ECG / PPG / BOTH&lt;br&gt;2. START duration_s" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="325" y="785" width="210" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_read" value="Đợi block CSV&lt;br&gt;BEGIN_SYNC_CSV ... END_SYNC_CSV&lt;br&gt;timeout = duration_s + 25" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="325" y="915" width="220" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_process" value="Parse và chuẩn hóa rows&lt;br&gt;sắp xếp theo time_ms&lt;br&gt;lưu raw CSV" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="80" y="915" width="210" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_filter" value="Xử lý hậu kỳ&lt;br&gt;ECG: FFT bandpass 0.5-45 Hz, notch 50 Hz, wavelet db4&lt;br&gt;PPG IR: wavelet db4" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1030" width="230" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="pc_plot" value="Lưu filtered CSV&lt;br&gt;vẽ ECG/PPG trên Matplotlib&lt;br&gt;cập nhật trạng thái chất lượng tín hiệu" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="330" y="1030" width="220" height="95" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="esp_boot" value="app_main()" style="ellipse;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="805" y="145" width="210" height="55" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_cfg_ppg" value="max30102_configure()&lt;br&gt;I2C SDA=21, SCL=22, 400 kHz&lt;br&gt;đọc Part ID, setup LED, sampleRate=100 Hz" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="660" y="225" width="250" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_cfg_ecg" value="ad8232_configure()&lt;br&gt;ADC1 channel 6 - GPIO34, 12 bit&lt;br&gt;tạo esp_timer ECG 1 kHz" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="940" y="225" width="250" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_tasks" value="Tạo task FreeRTOS&lt;br&gt;readMAX30102_task&lt;br&gt;readAD8232_task&lt;br&gt;printData_task&lt;br&gt;command_task" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="780" y="345" width="260" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_ready" value="command_task đặt mode mặc định BOTH&lt;br&gt;in READY qua UART" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="790" y="480" width="240" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_cmd" value="Nhận lệnh UART?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="815" y="580" width="190" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_mode" value="ECG / PPG / BOTH / ALL&lt;br&gt;Nếu chưa đo: cập nhật selected_mode&lt;br&gt;ACK,MODE,..." style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="650" y="705" width="230" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_status" value="STATUS&lt;br&gt;trả ECG_READY, PPG_READY,&lt;br&gt;MODE, RUNNING" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="930" y="705" width="230" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_start" value="START duration_s&lt;br&gt;normalize duration&lt;br&gt;0 =&gt; 10 s, tối đa 120 s" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="785" y="835" width="250" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_start_check" value="Đang đo hoặc cảm biến chưa sẵn sàng?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="795" y="950" width="230" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_err" value="Trả lỗi UART&lt;br&gt;ERR,START,... hoặc ERR,UNKNOWN_CMD" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="1040" y="980" width="160" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_alloc" value="Cấp phát buffer theo mode&lt;br&gt;ECG: duration_s * 1000 + 1000&lt;br&gt;PPG: duration_s * 100 + FIFO dự phòng" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="620" y="1070" width="270" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="esp_run" value="Bắt đầu phiên đo&lt;br&gt;clear FIFO PPG&lt;br&gt;measurement_start_us = esp_timer_get_time()&lt;br&gt;measurement_running = true&lt;br&gt;nếu có ECG: đọc mẫu đầu và start esp_timer" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="920" y="1070" width="280" height="115" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="sens_ecg_timer" value="ECG timer callback mỗi 1 ms&lt;br&gt;adc1_get_raw(GPIO34)&lt;br&gt;time_ms = sample_index * 1000 / 1000" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="160" width="225" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_ecg_store" value="store_ecg_sample()&lt;br&gt;lưu time_ms, ecg_raw&lt;br&gt;đếm clip thấp/cao&lt;br&gt;ghi overflow nếu đầy buffer" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1515" y="160" width="215" height="95" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_ppg_task" value="readMAX30102_task&lt;br&gt;nếu đang đo và mode có PPG&lt;br&gt;max30105_check FIFO mỗi 5 ms" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="300" width="225" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_ppg_stamp" value="Gán timestamp PPG theo batch&lt;br&gt;batch_time_ms = now - start&lt;br&gt;age_ms = (available - 1 - i) * 10 ms&lt;br&gt;time_ms = batch_time_ms - age_ms" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1510" y="300" width="235" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_ppg_store" value="store_ppg_sample()&lt;br&gt;lưu time_ms, red_raw, ir_raw&lt;br&gt;ghi overflow nếu đầy buffer" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1515" y="445" width="220" height="85" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_monitor" value="printData_task mỗi 10 ms&lt;br&gt;measurement_time_ms() &gt;= duration?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="585" width="210" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_stop" value="sensor_stop_measurement(true)&lt;br&gt;measurement_running = false&lt;br&gt;active_mode = IDLE&lt;br&gt;stop ECG timer&lt;br&gt;dump_pending = true" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1510" y="600" width="230" height="105" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_dump" value="dump_measurement_csv()&lt;br&gt;khóa print_mutex&lt;br&gt;trộn ECG và PPG theo time_ms&lt;br&gt;in BEGIN_SYNC_CSV, header, dữ liệu, STATS, END_SYNC_CSV" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#dae8fc;strokeColor=#e69138;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1320" y="760" width="310" height="120" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_clean" value="Dọn phiên đo&lt;br&gt;dump_pending = false&lt;br&gt;reset timestamp và thống kê&lt;br&gt;free buffer" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1370" y="925" width="220" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="sens_stop_cmd" value="STOP / IDLE từ PC&lt;br&gt;dừng sớm và vẫn dump CSV nếu có phiên đo" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#ffffff;strokeColor=#e69138;" vertex="1" parent="1">
+          <mxGeometry x="1305" y="1060" width="250" height="70" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_start" target="pc_init_dirs"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_init_dirs" target="pc_build_ui"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_build_ui" target="pc_choose"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_choose" target="pc_valid"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="Không" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="pc_valid" target="pc_error"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="Có" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_valid" target="pc_worker"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_worker" target="pc_send"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_read" target="pc_process"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_process" target="pc_filter"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;" edge="1" parent="1" source="pc_filter" target="pc_plot"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_boot" target="esp_cfg_ppg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_boot" target="esp_cfg_ecg"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e13" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_cfg_ppg" target="esp_tasks"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_cfg_ecg" target="esp_tasks"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_tasks" target="esp_ready"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_ready" target="esp_cmd"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e17" value="MODE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_cmd" target="esp_mode"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e18" value="STATUS" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_cmd" target="esp_status"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e19" value="START" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_cmd" target="esp_start"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_start" target="esp_start_check"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e21" value="Có lỗi" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#b85450;" edge="1" parent="1" source="esp_start_check" target="esp_err"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e22" value="Hợp lệ" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_start_check" target="esp_alloc"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#6aa84f;" edge="1" parent="1" source="esp_alloc" target="esp_run"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="e24" value="Có ECG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="esp_run" target="sens_ecg_timer"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_ecg_timer" target="sens_ecg_store"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e26" value="Có PPG" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="esp_run" target="sens_ppg_task"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_ppg_task" target="sens_ppg_stamp"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_ppg_stamp" target="sens_ppg_store"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e29" value="Giám sát thời gian" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="esp_run" target="sens_monitor"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e30" value="Đủ thời gian" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_monitor" target="sens_stop"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_stop" target="sens_dump"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e32" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_dump" target="sens_clean"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e33" value="CSV qua UART" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;dashed=1;" edge="1" parent="1" source="sens_dump" target="pc_read"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e34" value="STOP/IDLE" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;dashed=1;" edge="1" parent="1" source="pc_send" target="sens_stop_cmd"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#e69138;" edge="1" parent="1" source="sens_stop_cmd" target="sens_stop"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e36" value="UART MODE/START" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;strokeColor=#2b78c5;dashed=1;" edge="1" parent="1" source="pc_send" target="esp_cmd"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
